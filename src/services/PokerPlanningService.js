@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const POKER_PLANNING_API_BASE_URL = "http://localhost:8080/api/v1/pokerplanning";
+//const POKER_PLANNING_API_BASE_URL = "http://localhost:8080/api/v1/pokerplanning";
+const POKER_PLANNING_API_BASE_URL = "https://pokerplanning-backend.herokuapp.com/api/v1/pokerplanning";
 
 // Add a request interceptor
 axios.interceptors.request.use((config) => {

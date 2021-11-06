@@ -4,7 +4,8 @@ import axios from "axios";
  * @Copyright by https://loizenai.com
  *        youtube loizenai
  */
-const API_URL = "http://localhost:8080/api/auth/";
+//const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = "https://pokerplanning-backend.herokuapp.com/api/auth/";
 
 class AuthenticationService {
   signin = (username, password) => {

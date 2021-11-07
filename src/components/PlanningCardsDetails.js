@@ -28,7 +28,7 @@ import PokerPlanningService from "../services/PokerPlanningService";
 // Import react-circular-progressbar module and styles
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
+import { BsArrowClockwise } from "react-icons/bs";
 // Animation
 import AnimatedProgressProvider from "./usercounter/AnimatedProgressProvider";
 import ChangingProgressProvider from "./usercounter/ChangingProgressProvider";
@@ -43,7 +43,7 @@ export default class PlanningCardDetails extends Component {
       cardNumber: null,
       selectedTicket: null,
       currentUser: [],
-      searchSelectedVal: [],
+      searchSelectedVal: null,
       playing: false,
       isPlaying: false,
       showUserDialog: false,
@@ -66,7 +66,6 @@ export default class PlanningCardDetails extends Component {
 
   frequentRefresh() {
     const interval = setInterval(() => {
-      console.log("--------");
       this.loadVotedUserCount();
       this.getCurrentUser();
     }, 1000);
@@ -82,7 +81,6 @@ export default class PlanningCardDetails extends Component {
   getCurrentUser() {
     PokerPlanningService.getCurrentUser().then((res) => {
       if (this.state.currentUser === [] || this.state.currentUser.isModerator != res.data.isModerator) {
-        console.log("lllcurrentuser...." + res.data);
         this.setState({ currentUser: res.data });
       }
     });
@@ -97,6 +95,9 @@ export default class PlanningCardDetails extends Component {
       this.setState({ playing: false });
     }
     this.setIsPlaying();
+  };
+  resetAllVotes = () => {
+    PokerPlanningService.resetAllUsersVote();
   };
   //Function which is called when the component loads for the first time
   componentDidMount() {
@@ -143,10 +144,10 @@ export default class PlanningCardDetails extends Component {
     this.setState({ isPlaying: !this.state.isPlaying });
   }
   handleChange(e) {
-    console.log("Fruit Selected!!,,,,," + e);
+    console.log("value change!!,,,,," + e);
     this.props.updateStateProp(e);
     if (e == null) {
-      this.setState({ searchSelectedVal: [] });
+      this.setState({ searchSelectedVal: null });
     } else {
       this.setState({ searchSelectedVal: e });
     }
@@ -184,8 +185,18 @@ export default class PlanningCardDetails extends Component {
                 onChange={this.handleChange}
               />
             </div>
-
-            <div className="diva2 player">{this.state.playing ? <Pause onPlayerClick={this.handlePlayerClick} /> : <Play onPlayerClick={this.handlePlayerClick} />}</div>
+            <div className="diva2 player">
+              <div>{this.state.playing ? <Pause onPlayerClick={this.handlePlayerClick} /> : <Play onPlayerClick={this.handlePlayerClick} />}</div>{" "}
+              <div>
+                {this.state.playing ? (
+                  <Button onClick={this.resetAllVotes} variant="info" className="resetAllIcon">
+                    <BsArrowClockwise />
+                  </Button>
+                ) : (
+                  <div />
+                )}
+              </div>{" "}
+            </div>
           </div>
         )}
         {this.state.currentUser != null && !this.state.currentUser.isModerator && (
@@ -203,7 +214,7 @@ export default class PlanningCardDetails extends Component {
               </div>
             )}
           </div>
-        )}
+        )}{" "}
         <div className="parent">
           <div className="div1" onClick={this.updateUserVote(0)}>
             {" "}
@@ -291,8 +302,11 @@ export default class PlanningCardDetails extends Component {
 
   updateUserVote(voteVal) {
     return () => {
-      PokerPlanningService.updateUserVote(this.state.searchSelectedVal.iid, voteVal);
-      this.setState({ cardNumber: voteVal });
+      console.log(".......slect-....." + this.state.searchSelectedVal);
+      if (this.state.searchSelectedVal != null) {
+        PokerPlanningService.updateUserVote(this.state.searchSelectedVal.iid, voteVal);
+        this.setState({ cardNumber: voteVal });
+      }
     };
   }
 }

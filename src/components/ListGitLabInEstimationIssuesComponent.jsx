@@ -36,7 +36,6 @@ class ListGitLabInEstimationIssuesComponent extends Component {
   }
 
   updateState(e) {
-    console.log("....selected val...." + e);
     this.setState({ selectedCustomer: null });
   }
   deleteEmployee(id) {
@@ -61,7 +60,6 @@ class ListGitLabInEstimationIssuesComponent extends Component {
   getCurrentUser() {
     PokerPlanningService.getCurrentUser().then((res) => {
       if (this.state.currentUser === [] || this.state.currentUser.isModerator != res.data.isModerator) {
-        console.log("lllcurrentuser...." + res.data);
         this.setState({ currentUser: res.data });
       }
     });

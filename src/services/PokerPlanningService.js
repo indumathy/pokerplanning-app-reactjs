@@ -58,6 +58,9 @@ class PokerPlanningService {
   updateUserVote(ticketNumber, vote) {
     return axios.get(POKER_PLANNING_API_BASE_URL + "/vote?ticketNumber=" + ticketNumber + "&vote=" + vote);
   }
+  resetAllUsersVote() {
+    return axios.get(POKER_PLANNING_API_BASE_URL + "/resetallvotes");
+  }
 }
 
 export default new PokerPlanningService();

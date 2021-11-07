@@ -1,5 +1,7 @@
 import axios from "axios";
 
+//    "start": "serve -s build",
+//"build": "react-scripts build",
 //const API_URL = "http://localhost:8080/api/auth/";
 const API_URL = "https://pokerplanning-backend.herokuapp.com/api/auth/";
 

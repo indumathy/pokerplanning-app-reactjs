@@ -1,24 +1,17 @@
 import React, { Component } from "react";
 import logo from "../../logo.svg";
 import userIcon from "../../png/moreUser.gif";
-import { Offcanvas, Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import { Offcanvas, Card, ListGroup, Button } from "react-bootstrap";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 // import AuthVerify from "./common/auth-verify";
 import EventBus from "../../common/EventBus";
 
 import AuthService from "../../services/auth.service";
 import PokerPlanningService from "../../services/PokerPlanningService";
 
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
 import { green } from "@mui/material/colors";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
@@ -78,13 +71,11 @@ class HeaderComponent extends Component {
   };
 
   assignAsModerator() {
-    console.log(".......assignAsModerator..........." + this.state.currentUser.username);
     PokerPlanningService.assignAsModerator(this.state.currentUser.username).then((res) => {
       this.loadUser();
     });
   }
   removeFromModerator() {
-    console.log(".......removeFromModerator..........." + this.state.currentUser.username);
     PokerPlanningService.removeFromModerator(this.state.currentUser.username).then((res) => {
       this.loadUser();
     });
@@ -101,14 +92,20 @@ class HeaderComponent extends Component {
         showModeratorBoard: false,
         showAdminBoard: false,
       });
+      this.loadUser();
+      this.frequentRefresh();
+    } else {
+      this.logOut();
+      this.setState({
+        currentUser: null,
+        showModeratorBoard: false,
+        showAdminBoard: false,
+      });
     }
-
-    this.loadUser();
 
     EventBus.on("logout", () => {
       this.logOut();
     });
-    this.frequentRefresh();
   }
 
   componentWillUnmount() {
@@ -150,7 +147,7 @@ class HeaderComponent extends Component {
     const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
 
     return (
-      <div>
+      <div className="headerClass">
         <header>
           <nav className="navbar navbar-expand-md navbar-dark bg-dark">
             <div>
@@ -236,7 +233,8 @@ class HeaderComponent extends Component {
                         </div>
                       </div>
                     </div>
-                    {issue.voted && <CheckCircleRoundedIcon sx={{ fontSize: 40, color: green[500] }} />}
+                    {issue.voted && !issue.showVotedPoint && <CheckCircleRoundedIcon sx={{ fontSize: 40, color: green[500] }} />}
+                    {issue.voted && issue.showVotedPoint && <div className="votedPoint">{issue.votedPoint}</div>}
                   </ListGroup.Item>
                 ))}
 

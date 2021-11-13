@@ -33,7 +33,7 @@ class App extends Component {
           <HeaderComponent />
           <div className="democontainer">
             <Switch>
-              <Route exact path={["/"]} component={Home} />
+              <Route exact path={["/"]} component={Login} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/profxile" component={Profile} />

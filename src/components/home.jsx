@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PokerPlanningService from "../services/PokerPlanningService";
-import { Button, Card, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 class ListEmployeeComponent extends Component {
   constructor(props) {
     super(props);

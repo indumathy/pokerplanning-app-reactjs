@@ -15,6 +15,19 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+// Response interceptor for API calls
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async function (error) {
+    const originalRequest = error.config;
+
+    localStorage.removeItem("user");
+    return Promise.reject(error);
+  }
+);
+
 class PokerPlanningService {
   getEmployees() {
     return axios.get(POKER_PLANNING_API_BASE_URL);
@@ -60,6 +73,9 @@ class PokerPlanningService {
   }
   resetAllUsersVote() {
     return axios.get(POKER_PLANNING_API_BASE_URL + "/resetallvotes");
+  }
+  showAllUsersVote() {
+    return axios.get(POKER_PLANNING_API_BASE_URL + "/showallvotes");
   }
 }
 

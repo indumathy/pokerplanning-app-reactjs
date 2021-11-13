@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import PokerPlanningService from "../services/PokerPlanningService";
-import Collapsible from "react-collapsible";
 
 import { Button, Card, Badge, Collapse } from "react-bootstrap";
 import PlanningCardDetails from "./PlanningCardsDetails";
-import { FaBeer } from "react-icons/fa";
 import { FcMenu } from "react-icons/fc";
 
 import { Redirect } from "react-router-dom";
 import AuthService from "../services/AuthenticationService";
-import BackendService from "../services/BackendService";
 class ListGitLabInEstimationIssuesComponent extends Component {
   constructor(props) {
     super(props);

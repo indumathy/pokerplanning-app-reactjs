@@ -94,11 +94,10 @@ export default class Register extends Component {
     if (this.checkBtn.context._errors.length === 0) {
       AuthService.register(this.state.username, this.state.email, this.state.password).then(
         (response) => {
-          this.setState({
-            message: response.data.message,
-            successful: true,
-          });
+          this.props.history.push("/login");
+          window.location.reload();
         },
+
         (error) => {
           const resMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
 

@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import { Button, Card, Spinner, Offcanvas } from "react-bootstrap";
-import axios from "axios";
-import { Dropdown } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Select from "react-select";
-import ReactSearchBox from "react-search-box";
 import card0 from "../png/0.PNG";
 import card1 from "../png/1.png";
 import card2 from "../png/2.png";
@@ -17,24 +14,22 @@ import card100 from "../png/100.png";
 import userIcon from "../png/user4.gif";
 import cardInfinity from "../png/infinity.png";
 import cardBreak from "../png/break.png";
-import { ReactSearchAutocomplete } from "react-search-autocomplete";
-import Search from "react-search";
+import done from "../png/done4.png";
+import resetall from "../png/reset.png";
+
 import Pause from "./timer/Pause";
 import Play from "./timer/Play";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import { Text, View, StyleSheet, Animated } from "react-native";
+import { Animated } from "react-native";
 //This Component is a child Component of Customers Component
 import PokerPlanningService from "../services/PokerPlanningService";
 // Import react-circular-progressbar module and styles
-import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
+import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { BsArrowClockwise } from "react-icons/bs";
 // Animation
-import AnimatedProgressProvider from "./usercounter/AnimatedProgressProvider";
 import ChangingProgressProvider from "./usercounter/ChangingProgressProvider";
 
 // Radial separators
-import RadialSeparators from "./usercounter/RadialSeparators";
 
 export default class PlanningCardDetails extends Component {
   constructor(props) {
@@ -80,7 +75,7 @@ export default class PlanningCardDetails extends Component {
 
   getCurrentUser() {
     PokerPlanningService.getCurrentUser().then((res) => {
-      if (this.state.currentUser === [] || this.state.currentUser.isModerator != res.data.isModerator) {
+      if (this.state.currentUser === [] || this.state.currentUser.isModerator !== res.data.isModerator) {
         this.setState({ currentUser: res.data });
       }
     });
@@ -98,6 +93,10 @@ export default class PlanningCardDetails extends Component {
   };
   resetAllVotes = () => {
     PokerPlanningService.resetAllUsersVote();
+    this.state.cardNumber = null;
+  };
+  showScore = () => {
+    PokerPlanningService.showAllUsersVote();
   };
   //Function which is called when the component loads for the first time
   componentDidMount() {
@@ -174,7 +173,7 @@ export default class PlanningCardDetails extends Component {
       <div className="customerdetails">
         {this.state.currentUser != null && this.state.currentUser.isModerator && (
           <div className="parent1 searchHeader">
-            <div className="diva1">
+            <div className="diva2">
               <Select
                 options={this.state.data}
                 className="basic-single selectStyle"
@@ -185,18 +184,15 @@ export default class PlanningCardDetails extends Component {
                 onChange={this.handleChange}
               />
             </div>
-            <div className="diva2 player">
-              <div>{this.state.playing ? <Pause onPlayerClick={this.handlePlayerClick} /> : <Play onPlayerClick={this.handlePlayerClick} />}</div>{" "}
-              <div>
-                {this.state.playing ? (
-                  <Button onClick={this.resetAllVotes} variant="info" className="resetAllIcon">
-                    <BsArrowClockwise />
-                  </Button>
-                ) : (
-                  <div />
-                )}
-              </div>{" "}
-            </div>
+            {this.state.searchSelectedVal != null && (
+              <div className="playerStatus">
+                <div className="player">{this.state.playing ? <Pause onPlayerClick={this.handlePlayerClick} /> : <Play onPlayerClick={this.handlePlayerClick} />}</div>{" "}
+                <div>
+                  {this.state.playing ? <div>{this.state.playing ? <img src={resetall} className="done resetAllIcon" alt="logo" onClick={() => this.resetAllVotes()} /> : <div />}</div> : <div />}
+                </div>{" "}
+                <div>{this.state.playing ? <img src={done} className="done" alt="logo" onClick={() => this.showScore()} /> : <div />}</div>{" "}
+              </div>
+            )}
           </div>
         )}
         {this.state.currentUser != null && !this.state.currentUser.isModerator && (
@@ -257,13 +253,13 @@ export default class PlanningCardDetails extends Component {
             {" "}
             <img src={card100} className={this.state.cardNumber === 100 ? "pokercardSelected" : "pokercard"} alt="logo" />{" "}
           </div>
-          <div className="div11" onClick={this.updateUserVote(-1)}>
+          <div className="div11" onClick={this.updateUserVote("break")}>
             {" "}
-            <img src={cardBreak} className={this.state.cardNumber === -1 ? "pokercardSelected" : "pokercard"} alt="logo" />{" "}
+            <img src={cardBreak} className={this.state.cardNumber === "break" ? "pokercardSelected" : "pokercard"} alt="logo" />{" "}
           </div>
-          <div className="div12" onClick={this.updateUserVote(-2)}>
+          <div className="div12" onClick={this.updateUserVote("???")}>
             {" "}
-            <img src={cardInfinity} className={this.state.cardNumber === -2 ? "pokercardSelected" : "pokercard"} alt="logo" />{" "}
+            <img src={cardInfinity} className={this.state.cardNumber === "???" ? "pokercardSelected" : "pokercard"} alt="logo" />{" "}
           </div>
         </div>
         <div style={{ display: "flex" }}>
@@ -303,7 +299,7 @@ export default class PlanningCardDetails extends Component {
   updateUserVote(voteVal) {
     return () => {
       console.log(".......slect-....." + this.state.searchSelectedVal);
-      if (this.state.searchSelectedVal != null) {
+      if (this.state.searchSelectedVal != null && this.state.isPlaying == true) {
         PokerPlanningService.updateUserVote(this.state.searchSelectedVal.iid, voteVal);
         this.setState({ cardNumber: voteVal });
       }

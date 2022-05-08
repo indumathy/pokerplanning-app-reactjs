@@ -4,6 +4,7 @@ import PokerPlanningService from "../services/PokerPlanningService";
 import { Button, Card, Badge, Collapse } from "react-bootstrap";
 import PlanningCardDetails from "./PlanningCardsDetails";
 import { FcMenu } from "react-icons/fc";
+import { useMatomo } from "@datapunt/matomo-tracker-react";
 
 import { Redirect } from "react-router-dom";
 import AuthService from "../services/AuthenticationService";
@@ -109,8 +110,24 @@ class ListGitLabInEstimationIssuesComponent extends Component {
     }
 
     const { currentUser } = this.state;
+    const { trackPageView, trackEvent } = useMatomo();
+
+    // Track page view
+    React.useEffect(() => {
+      trackPageView();
+    }, []);
+
+    const handleOnClick = () => {
+      // Track click on button
+      trackEvent({ category: "sample-page", action: "click-event" });
+    };
+
     return (
       <div>
+        <Button onClick={() => this.handleOnClick()} aria-controls="example-collapse-text" aria-expanded={this.state.open} variant="info" className="menu">
+          <FcMenu className="iconMenu" />
+          <Badge className="badge">{this.state.issuesInEstimations.length}</Badge>
+        </Button>
         <Button onClick={() => this.viewGitLabIssues()} aria-controls="example-collapse-text" aria-expanded={this.state.open} variant="info" className="menu">
           <FcMenu className="iconMenu" />
           <Badge className="badge">{this.state.issuesInEstimations.length}</Badge>
